@@ -32,8 +32,8 @@ VECTOR      jmp     vector
 SETMSG      jmp     setmsg
 LSTNSA      jmp     iec.lstnsa
 TALKSA      jmp     iec.talksa
-MEMBOT      jmp     membot
-MEMTOP      jmp     memtop
+MEMBOT      jmp     mem.membot
+MEMTOP      jmp     mem.memtop
 SCNKEY      jmp     scnkey
 SETTMO      jmp     iec.settmo
 IECIN       jmp     iec.iecin

@@ -6,6 +6,7 @@ KERNAL	= \
 	kernal/dummy.asm \
 	kernal/keys.asm \
 	kernal/core.asm \
+	kernal/mem.asm \
 	kernal/vectors.asm \
 
 

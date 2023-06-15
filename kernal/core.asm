@@ -17,8 +17,6 @@ close
 chkin
 chkout
 clrchn
-;chrin
-;chrout
 getin
 clall
     rts
@@ -55,13 +53,10 @@ ramtas
 restor
 vector
 setmsg
-membot
-memtop
 scnkey
 settim
 rdtim
 udtim
-;screen
 plot
 iobase
 
