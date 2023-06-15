@@ -10,25 +10,6 @@ dest        .word       ?
                         
             .section    kernel
 
-init_key
-            stz     kbd_queue
-            rts
-
-get_key
-            lda     kbd_queue
-            beq     _out
-            stz     kbd_queue
-_out            
-            rts
-
-put_key
-            bcs     _done       ; Don't report non-ascii
-            cpy     #0
-            beq     _done       ; Don't report releases
-            sta     kbd_queue
-_done
-            rts
-
 nmi
             rts
 
@@ -63,7 +44,7 @@ test_size   = * - test
 start
             jsr     hardware.irq.init
             jsr     device.init
-            jsr     init_key
+            jsr     io.init
             jsr     f256.init
 
         ; Mount the CLI in the user's address space,
@@ -92,43 +73,6 @@ start
           ; Run the block at $c000
             jmp     Gadget.fork
             
-
-        ; Install a "test" cli
-            ldx     #0
--           lda     test,x
-            sta     $2200,x     ; $0200 in userland
-            inx
-            cpx     #test_size
-            bne     -
-            stz     mmu_ctrl
-            lda     #3
-            sta     mmu
-            ldx     #<$0200
-            ldy     #>$0200
-            jsr     Gadget.setptr
-            jmp     Gadget.chainptr
-
-            lda     #2
-            sta     io_ctrl
-            ldx     #0
-_loop       lda     _test,x
-            beq     _done
-            sta     $c000,x
-            inx
-            bra     _loop
-_done       
-            lda     #2
-            sta     io_ctrl
-            inc     $c000+79
-            jsr     get_key
-            beq     _done
-            ldx     #2
-            stx     io_ctrl
-            sta     $c000
-            bra     _done
-
-_test       .null   "pwned!"
-
             .send
             .endn
             

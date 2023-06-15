@@ -51,7 +51,7 @@ CHKIN       jmp     io.chkin
 CHKOUT      jmp     io.chkout
 CLRCHN      jmp     io.clrchn
 CHRIN       jmp     io.chrin
-CHROUT      jmp     screen.chrout; io.chrout
+CHROUT      jmp     io.chrout
 LOAD        jmp     iec.load
 SAVE        jmp     iec.save
 SETTIM      jmp     settim

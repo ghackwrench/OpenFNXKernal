@@ -171,7 +171,7 @@ _end        = * - _etab
 send
             jsr     ascii               ; A = ASCII translation or carry set.
             ldy     released,x          ; Y = pressed/released flag
-            jmp     kernel.put_key            
+            jmp     kernel.io.key_pressed
 
 .if false
           ; Allocate an event; drop keys if out of events.

@@ -8,27 +8,6 @@
             .section    kernel
 
 
-io  .namespace
-ioinit
-setlfs
-setnam
-open
-close
-chkin
-chkout
-clrchn
-getin
-clall
-    rts
-    
-chrin
-            jsr     screen.cursor_on
-            lda     #2
-            sta     io_ctrl
-_loop       inc     $c000+79
-            bra     _loop
-    .endn
-
 iec .namespace
 lstnsa
 talksa

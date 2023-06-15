@@ -50,7 +50,7 @@ load        .null   "LOAD"
 drive       .null   "DRIVE"
 run         .null   "RUN"
 sys         .null   "SYS"
-help        .null   "HELP"
+help        .null   "help"
             .endn
 
 commands
@@ -116,11 +116,13 @@ puts
             sty     src+1
 puts_src
             ldy     #0
--           lda     (src),y
+_loop       lda     (src),y
             beq     _done
             jsr     CHROUT
             iny
-            bra     -
+            bne     _loop
+            inc     src+1
+            bra     _loop
 _done       rts
 
 banner
@@ -196,7 +198,7 @@ do_cmd
             clc
             ldx     #0              ; Start of table
 _loop       ldy     commands,x      ; Offset of next command in strings
-            beq     _out
+            beq     error
 
           ; Move X to the address of the implementation
             inx
@@ -226,23 +228,34 @@ _call
 strcmp
           ; Point 'src' at the potential match.
             sty     src+0
-            lda     #<strings
+            lda     #>strings
             sta     src+1
-            
+
           ; Compare it to the string in 'cmd'.
-            sec             ; Not found yet.
             ldy     #0
 -           lda     (src),y
-            beq     _out
+            beq     _end
+            cmp     cmd,y
+            bne     _failed
             iny
-            eor     cmd-1,y
-            beq     -
-            clc
-_out        rts            
+            bra     -
+_end        lda     cmd,y
+            cmp     #13
+            beq     _found
+            cmp     #32
+            beq     _found
+_failed     sec
+            rts            
+_found      clc
+            rts
 
 error
+            ldx     #<_text
+            ldy     #>_text
+            jsr     puts
             clc
             rts
+_text       .text   "Unknown command.",13,0            
 
 find_arg
     ; IN: Y points just beyond the command string

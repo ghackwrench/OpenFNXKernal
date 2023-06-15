@@ -47,10 +47,11 @@ init
         plx
         rts
 
-chrout
-            lda     #2
-            sta     io_ctrl
-            lda     user.reg_a
+putch
+            pha
+            phy
+            ldy     #2
+            sty     io_ctrl
             cmp     #13
             beq     _cr
             ldy     col
@@ -67,6 +68,8 @@ _lf         ldy     #0
 _done
             sty     col
             stz     io_ctrl
+            ply
+            pla
             rts            
 
 _cr
