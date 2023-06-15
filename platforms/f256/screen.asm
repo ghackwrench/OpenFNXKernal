@@ -203,6 +203,8 @@ cursor_on
 _done       rts        
             
 cursor_off
+            pha
+            phy
             dec     cursor
             bpl     _done     
             lda     #2
@@ -211,7 +213,9 @@ cursor_off
             lda     under
             sta     (line),y
             stz     io_ctrl
-_done       rts            
+_done       ply
+            pla
+            rts            
 
             .send
             .endn

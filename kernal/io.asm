@@ -97,7 +97,8 @@ chrin
 _getch      jsr     screen.cursor_on
 -           jsr     getch
             beq     -
-            
+            jsr     screen.cursor_off            
+
           ; TODO: at least handle backspace...
           ; (this whole function is just a stub)
 

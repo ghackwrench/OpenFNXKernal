@@ -135,7 +135,9 @@ _text       .text   "Simple CLI for the C64 ABI.",13
 help
             ldx     #<_text
             ldy     #>_text
-            jmp     puts
+            jsr     puts
+            clc
+            rts
 _text
             .text   13,"Supported commands:",13
             .text   "   cls         Clears the screen.",13
