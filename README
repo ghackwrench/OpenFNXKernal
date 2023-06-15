@@ -1,0 +1,18 @@
+FoenixKERNAL - a CBM style ABI for 65c02 and 65816 Foenix computers.
+
+FoenixKERNAL is a clean-room implementation of a CBM style "KERNAL" ABI
+(Application Binary Interface) designed to be generally backwards
+compatible with the C64 KERNAL as documented in the Commodore 64 
+Programmer's Reference.
+
+FoenixKERNAL is released under the GPL3 license with the kernel exception:
+applications which merely make use of the kernel through ABI calls are NOT
+considered 'derivative works'.
+
+
+Building
+--------
+
+To build, you should only need GNU make and 64tass.  Just type 'make'.
+
+

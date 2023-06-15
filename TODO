@@ -1,0 +1,2 @@
+- The gate needs to run kernel calls in emulation mode; otherwise,
+  the stack could fail to wrap and wander into the zero page.
