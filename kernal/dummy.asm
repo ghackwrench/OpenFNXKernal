@@ -71,7 +71,7 @@ start
             sta     io_ctrl
             
           ; Run the block at $c000
-            jmp     Gadget.fork
+            jmp     userland
             
             .send
             .endn

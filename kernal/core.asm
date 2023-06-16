@@ -35,8 +35,6 @@ scnkey
 settim
 rdtim
 udtim
-plot
-iobase
 
 rts
 

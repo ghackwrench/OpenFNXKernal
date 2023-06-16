@@ -21,6 +21,40 @@ dest        .word       ?
 
             .section    hardware
 
+PLOT
+            lda     user.carry
+            beq     _set
+_get
+            ldx     col
+            ldy     row
+            jmp     return_xy
+
+_set
+            ldx     user.reg_x
+            stx     col
+            ldy     user.reg_y
+            sty     row
+            
+            lda     #6
+            sta     line+1
+            tya
+            asl     a
+            asl     a
+            adc     row
+            rol     line+1
+            
+            asl     a
+            rol     line+1
+            asl     a
+            rol     line+1
+            asl     a
+            rol     line+1
+            asl     a
+            rol     line+1
+                                       
+            sta     line+0
+            rts
+
 TEXT_LUT_FG = $D800
 TEXT_LUT_BG = $D840
 
@@ -97,7 +131,7 @@ _cr
             iny
             bra     -
 
-screen
+SCREEN
             ldx     #80
             ldy     #60
             jmp     return_xy

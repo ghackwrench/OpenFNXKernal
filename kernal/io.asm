@@ -184,6 +184,11 @@ IOINIT
 
             rts
 
+IOBASE
+            ldx     #<$dc00
+            ldy     #>$dc00
+            jmp     return_xy
+
 SETLFS
             lda     user.reg_a
             ldx     user.reg_x
@@ -209,7 +214,6 @@ LOAD
             lda     user.reg_x
             sta     dest+0
             lda     user.reg_y
-            ora     #$20
             sta     dest+1 
 
           ; Open the file by name.
@@ -246,7 +250,9 @@ LOAD
             
 -           jsr     platform.iec.IECIN
             bcs     _error  ; TODO: not-found if first read.
-            sta     (dest)
+            ldx     dest+0
+            ldy     dest+1
+            jsr     write_axy
             inc     dest+0
             bne     +
             inc     dest+1
@@ -263,16 +269,14 @@ LOAD
 
           ; Return end of data.
             ldx     dest+0
-            lda     dest+1
-            and     #$1f
-            tay
+            ldy     dest+1
             clc
             jmp     return_xy
             
 _error
             lda     #0
             sec
-            jmp     return_a_or_xy
+            jmp     return_a
 
 _verify
             sec

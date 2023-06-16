@@ -60,9 +60,9 @@ STOP        jmp     keyboard.stop
 GETIN       jmp     io.GETIN
 CLALL       jmp     io.clall
 UDTIM       jmp     udtim
-SCREEN      jmp     screen.screen
-PLOT        jmp     plot
-IOBASE      jmp     iobase
+SCREEN      jmp     screen.SCREEN
+PLOT        jmp     screen.PLOT
+IOBASE      jmp     io.IOBASE
             .ends
 
 .if false            

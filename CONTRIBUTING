@@ -3,9 +3,9 @@ To implement a kernal call:
     - Optionally add an appropriate file for the call (eg io.asm).
     - Implement the call from scratch or pull code from OpenKERNAL.
     - If returning values, exit your function with a jmp to one of:
-        return_a          - Returns A, X and Y are unmodified.
-        return_xy         - Returns X and Y, A is unmodified.
-        return_a_or_xy    - Returns A if C=1, X and Y if C=0.
+        return_a          - Returns A; X and Y are unmodified.
+        return_xy         - Returns X and Y; A is unmodified.
+        return_axy        - Returns A, X, and Y.
     - Remove the dummy implementation from kernal/core.asm
     - Update the vector struct in kernel/vectors.asm
                               

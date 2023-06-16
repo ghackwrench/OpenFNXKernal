@@ -152,6 +152,7 @@ reg_a       .word       ?
 reg_x       .word       ?
 reg_y       .word       ?
 reg_s       .word       ?
+carry       .word       ?
             .ends
             
             .virtual    $5e00
@@ -167,25 +168,21 @@ vectors     = * & $ff00 ; Vectors is the page containing the vectors.
 *   = $fe00
 args        .dstruct    regs_t
 
-return_a_or_xy
-        bcc     return_xy
 return_a
-        sta     user.reg_a+0
-        stz     user.reg_a+1
-        rts
+            sta     user.reg_a+0
+            stz     user.reg_a+1
+            rts
 
 return_axy
-        sta     user.reg_a+0
-        stz     user.reg_a+1
+            sta     user.reg_a+0
+            stz     user.reg_a+1
 return_xy
-        stx     user.reg_x+0
-        stz     user.reg_x+1
-        sty     user.reg_y+0
-        stz     user.reg_y+1
-        rts
+            stx     user.reg_x+0
+            stz     user.reg_x+1
+            sty     user.reg_y+0
+            stz     user.reg_y+1
+            rts
         
-Gadget      .namespace  ; There be dragons here!
-
 * = $fe24   ; Magic vector for SCREEN ($FFED)
 
           ; Make like we JSR'd from $FFED (SCREEN trashes X)
@@ -227,32 +224,28 @@ nmi
             rti                 ; Restores register state.
         
 
-setptr
-            pha
+write_axy
+            sta     (_const+1) - $e000 + $4000 ; In kernel map.
             stz     mmu_ctrl
-            lda     mmu
+            lda     #3; mmu
             sta     mmu_ctrl
-            stx     ptr+0
-            sty     ptr+1
+            stx     _op+1
+            sty     _op+2
+_const      lda     #0
+_op         sta     $ffff            
             stz     mmu_ctrl
-            pla
             rts
 
-readptr
+read_axy
             stz     mmu_ctrl
-            lda     mmu
+            lda     #3; mmu
             sta     mmu_ctrl
-            .word   $b9         ; lda abs,y
-ptr         .word   0
+            stx     _op+1
+            sty     _op+2
+_op         lda     $ffff
             stz     mmu_ctrl
             rts
             
-chainptr
-            stz     mmu_ctrl
-            lda     mmu
-            sta     mmu_ctrl
-            jmp     (ptr)
-
 mmu_reset
             stz     mmu_ctrl
             jmp     flash
@@ -366,6 +359,8 @@ gate
             sta     args.reg_a
             stx     args.reg_x
             sty     args.reg_y
+            stz     args.carry
+            rol     args.carry
 
           ; Save the stack (might be a 16 bit pointer)
             tsx
@@ -444,7 +439,7 @@ disp_nmi
             inc     $cdf0+7
 +           rts
 
-fork
+userland
             lda     #3
             sta     mmu_ctrl
             lda     #4
@@ -493,4 +488,3 @@ abort       .byte   $40 ; rti for ABORT; lsb for CLALL
             .word   mmu_reset
             .word   irq_6502                     
 
-            .endn
