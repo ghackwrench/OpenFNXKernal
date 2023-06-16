@@ -21,18 +21,6 @@ talk
 readst
     .endn     
 
-keyboard    .namespace
-stop
-            .endn
-
-setmsg
-scnkey
-settim
-rdtim
-udtim
-
-rts
-
 
 
         .send

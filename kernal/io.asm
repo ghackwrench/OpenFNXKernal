@@ -7,14 +7,7 @@
             .namespace  kernel
 io          .namespace
 
-QUEUE_LEN   = 16        ; Must be a power of two.
 LINE_LEN    = 80        ; Line buffer length.
-
-          ; Variables for keyboard buffering.
-            .section    dp
-kbd_head    .byte       ?       ; Head of keyboard circular queue. 
-kbd_tail    .byte       ?       ; Tail of keyboard circular queue.
-            .send
 
 
           ; Variables for SETLFS & SETNAM.
@@ -37,70 +30,24 @@ reporting   .byte       ?       ; non-zero if chrin is reporting.
             .send            
 
             .section    kmem
-kbd_queue   .fill       QUEUE_LEN   ; Simple keyboard buffer.
 line        .fill       LINE_LEN    ; Q&D line buffer.
             .send
             
             .section    kernel
             
 init
-            stz     kbd_head
-            stz     kbd_tail
+            jsr     kbd.init
             stz     line_length
             stz     reporting
             rts
             
-key_pressed
-    ; A contains the key, Y=1 (pressed) or Y=0 (released).
-    ; Carry set on non-ASCII.
-    ; Preserve X.
-
-
-          ; Skip non-ascii events
-            bcs     _done
-
-          ; Ignore key released events
-            cpy     #0
-            beq     _done
-            
-        stz io_ctrl
-        inc io_ctrl
-        inc io_ctrl
-        inc $c000+79
-        stz io_ctrl
-
-          ; Try to queue the key.
-            ldy     kbd_head
-            sta     kbd_queue,y
-            tya
-            inc     a
-            and     #QUEUE_LEN - 1
-            cmp     kbd_tail
-            beq     _done
-            sta     kbd_head
-            clc
-_done
-            rts
 
 CHROUT      
             lda     user.reg_a
             jmp     screen.putch
 
-getch
-            ldy     #0          ; No key found
-            ldx     kbd_tail
-            cpx     kbd_head
-            beq     _done
-            ldy     kbd_queue,x
-            txa
-            inc     a
-            and     #QUEUE_LEN - 1
-            sta     kbd_tail
-_done       tya
-            rts
-
 GETIN
-            jsr     getch
+            jsr     kbd.get_key
             jmp     return_a            
             
 CHRIN
@@ -114,7 +61,7 @@ CHRIN
 
           ; Read a key.
 _getch      jsr     screen.cursor_on
--           jsr     getch
+-           jsr     kbd.get_key
             beq     -
             jsr     screen.cursor_off            
 
@@ -340,7 +287,7 @@ _iovec
             .word   io.clrchn
             .word   io.CHRIN
             .word   io.CHROUT
-            .word   keyboard.stop
+            .word   kbd.STOP
             .word   io.GETIN
             .word   io.clall
             .word   _user

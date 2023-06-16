@@ -34,7 +34,7 @@ LSTNSA      jmp     iec.lstnsa
 TALKSA      jmp     iec.talksa
 MEMBOT      jmp     mem.MEMBOT
 MEMTOP      jmp     mem.MEMTOP
-SCNKEY      jmp     scnkey
+SCNKEY      jmp     kbd.SCNKEY
 SETTMO      jmp     iec.settmo
 IECIN       jmp     iec.iecin
 IECOUT      jmp     iec.iecout
@@ -56,10 +56,10 @@ LOAD        jmp     io.LOAD
 SAVE        jmp     io.save
 SETTIM      jmp     rtc.SETTIM
 RDTIM       jmp     rtc.RDTIM
-STOP        jmp     keyboard.stop
+STOP        jmp     kbd.STOP
 GETIN       jmp     io.GETIN
 CLALL       jmp     io.clall
-UDTIM       jmp     udtim
+UDTIM       jmp     kbd.UDTIM
 SCREEN      jmp     screen.SCREEN
 PLOT        jmp     screen.PLOT
 IOBASE      jmp     io.IOBASE
