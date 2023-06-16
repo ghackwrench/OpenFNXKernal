@@ -54,8 +54,8 @@ CHRIN       jmp     io.CHRIN
 CHROUT      jmp     io.CHROUT
 LOAD        jmp     io.LOAD
 SAVE        jmp     io.save
-SETTIM      jmp     settim
-RDTIM       jmp     rdtim
+SETTIM      jmp     rtc.SETTIM
+RDTIM       jmp     rtc.RDTIM
 STOP        jmp     keyboard.stop
 GETIN       jmp     io.GETIN
 CLALL       jmp     io.clall
