@@ -17,11 +17,17 @@ kbd_tail    .byte       ?       ; Tail of keyboard circular queue.
             .send
 
 
-          ; Variables for SETLFS.
+          ; Variables for SETLFS & SETNAM.
+          
             .section    dp
 file_id     .byte       ?
 device_id   .byte       ?
 channel_id  .byte       ?
+fname_len   .byte       ?
+            .send
+
+            .section    pages
+fname       .fill       256         ; File name copied from userland.
             .send
 
           ; Variables for CHRIN.
@@ -33,8 +39,6 @@ reporting   .byte       ?       ; non-zero if chrin is reporting.
             .section    kmem
 kbd_queue   .fill       QUEUE_LEN   ; Simple keyboard buffer.
 line        .fill       LINE_LEN    ; Q&D line buffer.
-fname       .fill       256         ; File name copied from userland.
-fname_len   .byte       ?
             .send
             
             .section    kernel
@@ -201,10 +205,22 @@ SETLFS
             rts
 
 SETNAM
-            lda     #'$'
-            sta     fname
-            lda     #1
+            stz     dest+0
+            lda     #>fname
+            sta     dest+1
+            
+            lda     user.reg_a
             sta     fname_len
+            sta     tmp
+
+            ldx     user.reg_x
+            ldy     user.reg_y
+-           jsr     read_axy
+            sta     (dest)
+            inc     dest+0
+            dec     tmp
+            bne     -
+
             rts
 
 LOAD

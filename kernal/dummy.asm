@@ -3,9 +3,10 @@
 kernel      .namespace
 
             .section    dp
-kbd_queue   .byte       ?
+tmp         .byte       ?
 src         .word       ?
 dest        .word       ?
+
             .send
                         
             .section    kernel
