@@ -13,6 +13,35 @@ mem_end     .word       ?
 
 mem         .namespace
             .section    kernel
+
+RAMTAS
+
+    ; Users $0000-$1fff is mapped at our $2000.
+
+            ldx     #2
+-           stz     $2000,x
+            inx
+            bne     -
+            stz     $2100
+            stz     $2101
+
+            ldx     #0
+-           stz     $2200,x
+            sta     $2300,x
+            inx
+            bne     -
+
+            ldx     #<$800
+            ldy     #>$800
+            jsr     set_top
+
+            ldx     #<$a000
+            ldy     #>$a000
+            jsr     set_bot
+
+            rts
+
+
             
 MEMBOT
             bcc     set_bot

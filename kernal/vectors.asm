@@ -26,7 +26,7 @@ vectors     .struct                 ; $ffd5
 
 SCINIT      jmp     io.SCINIT       ; $ff81
 IOINIT      jmp     io.IOINIT
-RAMTAS      jmp     ramtas
+RAMTAS      jmp     mem.RAMTAS
 RESTOR      jmp     io.RESTOR
 VECTOR      jmp     io.VECTOR
 SETMSG      jmp     setmsg

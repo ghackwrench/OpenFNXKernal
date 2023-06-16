@@ -309,7 +309,7 @@ save
             rts
 
 RESTOR
-            lda     #$1f    ; Size of the vector table.
+            lda     #$20    ; Size of the vector table.
             sta     tmp
 
             lda     #<_iovec
@@ -349,7 +349,7 @@ _iovec
 
 
 VECTOR
-            lda     #$1f    ; Size of the vector table.
+            lda     #$20    ; Size of the vector table.
             sta     tmp
 
             lda     user.carry

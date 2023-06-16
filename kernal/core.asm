@@ -25,7 +25,6 @@ keyboard    .namespace
 stop
             .endn
 
-ramtas
 setmsg
 scnkey
 settim
