@@ -27,7 +27,6 @@ keyboard    .namespace
 stop
             .endn
 
-scinit
 ramtas
 restor
 vector

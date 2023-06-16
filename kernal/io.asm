@@ -63,7 +63,7 @@ key_pressed
 _done
             rts
 
-chrout      
+CHROUT      
             lda     user.reg_a
             jmp     screen.putch
 
@@ -80,11 +80,11 @@ getch
 _done       tya
             rts
 
-getin
+GETIN
             jsr     getch
             jmp     return_a            
             
-chrin
+CHRIN
     ; CHRIN on stdin is modal ... it provides screen editing until
     ; <ENTER> is pressed, then it returns the contents of the current
     ; line, including the carriage return.
@@ -141,8 +141,34 @@ _ok         cmp     #13
 _done       jmp     return_a            
    
 
+SCINIT
+          ; TODO: restore default I/O to keyboard/screen.
+            
+          ; Re-init the video.
+            lda     #$36
+            jmp     screen.init
 
-ioinit
+IOINIT
+          ; CIA already initialized by platform code;
+          ; could potentially do it here-ish instead.
+
+          ; TODO: init the SIDs.
+
+          ; Set memory top.
+            ldx     #<$800
+            ldy     #>$800
+            jsr     mem.set_top
+
+          ; Set memory bottom.
+            ldx     #<$c000
+            ldy     #>$c000
+            jsr     mem.set_bot
+
+          ; Interrupt timer already initialized by platform code;
+          ; could potentially do it here, instead.
+
+            rts
+
 setlfs
 setnam
 open

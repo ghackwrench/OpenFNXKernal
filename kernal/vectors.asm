@@ -24,16 +24,16 @@ vectors     .struct                 ; $ffd5
             jmp     dummy           ; Available
             jmp     dummy           ; Available
 
-SCINIT      jmp     scinit          ; $ff81
-IOINIT      jmp     io.ioinit
+SCINIT      jmp     io.SCINIT       ; $ff81
+IOINIT      jmp     io.IOINIT
 RAMTAS      jmp     ramtas
 RESTOR      jmp     restor
 VECTOR      jmp     vector
 SETMSG      jmp     setmsg
 LSTNSA      jmp     iec.lstnsa
 TALKSA      jmp     iec.talksa
-MEMBOT      jmp     mem.membot
-MEMTOP      jmp     mem.memtop
+MEMBOT      jmp     mem.MEMBOT
+MEMTOP      jmp     mem.MEMTOP
 SCNKEY      jmp     scnkey
 SETTMO      jmp     iec.settmo
 IECIN       jmp     iec.iecin
@@ -50,14 +50,14 @@ CLOSE       jmp     io.close
 CHKIN       jmp     io.chkin
 CHKOUT      jmp     io.chkout
 CLRCHN      jmp     io.clrchn
-CHRIN       jmp     io.chrin
-CHROUT      jmp     io.chrout
+CHRIN       jmp     io.CHRIN
+CHROUT      jmp     io.CHROUT
 LOAD        jmp     iec.load
 SAVE        jmp     iec.save
 SETTIM      jmp     settim
 RDTIM       jmp     rdtim
 STOP        jmp     keyboard.stop
-GETIN       jmp     io.getin
+GETIN       jmp     io.GETIN
 CLALL       jmp     io.clall
 UDTIM       jmp     udtim
 SCREEN      jmp     screen.screen
@@ -76,8 +76,8 @@ ivec_start
             .word   io.chkin
             .word   io.chkout
             .word   io.clrchn
-            .word   io.chrin
-            .word   io.chrout
+            .word   io.CHRIN
+            .word   io.CHROUT
             .word   keyboard.stop
             .word   io.getin
             .word   io.clall

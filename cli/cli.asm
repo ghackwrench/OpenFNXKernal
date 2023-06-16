@@ -156,6 +156,7 @@ _loop       inc     $c000+77
             bra     _loop            
 
 shell
+            jsr     SCINIT
             jsr     banner
 
             lda     #8

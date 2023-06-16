@@ -14,25 +14,25 @@ mem_end     .word       ?
 mem         .namespace
             .section    kernel
             
-membot
-            bcc     _save
+MEMBOT
+            bcc     set_bot
 
 _load       ldx     mem_end+0
             ldy     mem_end+1
             jmp     return_xy
 
-_save       stx     mem_end+0
+set_bot     stx     mem_end+0
             sty     mem_end+1
             rts
 
-memtop
-            bcc     _save
+MEMTOP
+            bcc     set_top
 
 _load       ldx     mem_start+0
             ldy     mem_start+1
             jmp     return_xy
 
-_save       stx     mem_start+0
+set_top     stx     mem_start+0
             sty     mem_start+1
             rts
 
