@@ -19,8 +19,6 @@ unlstn
 listen
 talk
 readst
-load
-save
     .endn     
 
 keyboard    .namespace

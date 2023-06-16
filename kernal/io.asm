@@ -305,7 +305,92 @@ chkin
 chkout
 clrchn
 clall
+save
             rts
+
+RESTOR
+            lda     #$1f    ; Size of the vector table.
+            sta     tmp
+
+            lda     #<_iovec
+            sta     src+0
+            lda     #>_iovec
+            sta     src+1
+ 
+            ldx     #<$314
+            ldy     #>$314
+-           lda     (src)
+            jsr     write_axy
+            inc     src+0
+            bne     +
+            inc     src+1
++           inx            
+            dec     tmp
+            bne     -
+_user       rts
+_break      rts
+_iovec
+            .word   irq_6502    ; Not safe for 816 code.
+            .word   _break      ; TODO: Not sure what belongs here.
+            .word   nmi
+            .word   io.open     
+            .word   io.close
+            .word   io.chkin
+            .word   io.chkout
+            .word   io.clrchn
+            .word   io.CHRIN
+            .word   io.CHROUT
+            .word   keyboard.stop
+            .word   io.GETIN
+            .word   io.clall
+            .word   _user
+            .word   io.LOAD
+            .word   io.save
+
+
+VECTOR
+            lda     #$1f    ; Size of the vector table.
+            sta     tmp
+
+            lda     user.carry
+            bne     _out
+        
+_in
+            lda     #<$2000+$314
+            sta     dest+0
+            lda     #>$2000+$314
+            sta     dest+1
+ 
+            ldx     user.reg_x
+            ldy     user.reg_y
+-           jsr     read_axy
+            sta     (dest)
+            inc     dest
+            inx     
+            bne     +
+            iny
++           dec     tmp
+            bne     -
+            rts
+
+_out
+            lda     #<$2000+$314
+            sta     src+0
+            lda     #>$2000+$314
+            sta     src+1
+ 
+            ldx     user.reg_x
+            ldy     user.reg_y
+-           lda     (src)
+            jsr     write_axy
+            inc     src
+            inx     
+            bne     +
+            iny
++           dec     tmp
+            bne     -
+            rts
+
 
             .send
             .endn
