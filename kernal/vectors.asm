@@ -43,8 +43,8 @@ UNLSTN      jmp     iec.unlstn
 LISTEN      jmp     iec.listen
 TALK        jmp     iec.talk
 READST      jmp     iec.readst
-SETLFS      jmp     io.setlfs
-SETNAM      jmp     io.setnam
+SETLFS      jmp     io.SETLFS
+SETNAM      jmp     io.SETNAM
 OPEN        jmp     io.open
 CLOSE       jmp     io.close
 CHKIN       jmp     io.chkin
@@ -52,7 +52,7 @@ CHKOUT      jmp     io.chkout
 CLRCHN      jmp     io.clrchn
 CHRIN       jmp     io.CHRIN
 CHROUT      jmp     io.CHROUT
-LOAD        jmp     iec.load
+LOAD        jmp     io.LOAD
 SAVE        jmp     iec.save
 SETTIM      jmp     settim
 RDTIM       jmp     rdtim

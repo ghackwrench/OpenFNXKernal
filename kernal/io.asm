@@ -10,16 +10,31 @@ io          .namespace
 QUEUE_LEN   = 16        ; Must be a power of two.
 LINE_LEN    = 80        ; Line buffer length.
 
+          ; Variables for keyboard buffering.
             .section    dp
 kbd_head    .byte       ?       ; Head of keyboard circular queue. 
 kbd_tail    .byte       ?       ; Tail of keyboard circular queue.
+            .send
+
+
+          ; Variables for SETLFS.
+            .section    dp
+file_id     .byte       ?
+device_id   .byte       ?
+channel_id  .byte       ?
+            .send
+
+          ; Variables for CHRIN.
+            .section    dp
 line_length .byte       ?       ; # of chars in 'line' below.
 reporting   .byte       ?       ; non-zero if chrin is reporting.
             .send            
 
             .section    kmem
-kbd_queue   .fill       QUEUE_LEN   ; Simple keyboard buffer
+kbd_queue   .fill       QUEUE_LEN   ; Simple keyboard buffer.
 line        .fill       LINE_LEN    ; Q&D line buffer.
+fname       .fill       256         ; File name copied from userland.
+fname_len   .byte       ?
             .send
             
             .section    kernel
@@ -169,8 +184,101 @@ IOINIT
 
             rts
 
-setlfs
-setnam
+SETLFS
+            lda     user.reg_a
+            ldx     user.reg_x
+            ldy     user.reg_y
+            
+            sta     file_id
+            stx     device_id
+            sty     channel_id
+
+            rts
+
+SETNAM
+            lda     #'$'
+            sta     fname
+            lda     #1
+            sta     fname_len
+            rts
+
+LOAD
+            lda     user.reg_a
+            bne     _verify            
+
+            lda     user.reg_x
+            sta     dest+0
+            lda     user.reg_y
+            ora     #$20
+            sta     dest+1 
+
+          ; Open the file by name.
+
+            lda     device_id
+            jsr     platform.iec.LISTEN
+            bcs     _error
+            
+            lda     channel_id
+            jsr     platform.iec.OPEN
+            bcs     _error
+            
+            ldx     #0
+-           lda     fname,x
+            jsr     platform.iec.IECOUT
+            bcs     _error
+            inx
+            cpx     fname_len
+            bne     -
+            
+            jsr     platform.iec.UNLISTEN
+            bcs     _error
+                        
+            
+          ; Read the data.
+          
+            lda     device_id
+            jsr     platform.iec.TALK
+            bcs     _error
+            
+            lda     channel_id
+            jsr     platform.iec.DEV_SEND
+            bcs     _error
+            
+-           jsr     platform.iec.IECIN
+            bcs     _error  ; TODO: not-found if first read.
+            sta     (dest)
+            inc     dest+0
+            bne     +
+            inc     dest+1
++           bvc     -            
+            
+          ; Close.
+            jsr     platform.iec.UNTALK                        
+            lda     device_id
+            jsr     platform.iec.LISTEN
+            lda     channel_id
+            jsr     platform.iec.CLOSE
+            jsr     platform.iec.UNLISTEN
+            
+
+          ; Return end of data.
+            ldx     dest+0
+            lda     dest+1
+            and     #$1f
+            tay
+            clc
+            jmp     return_xy
+            
+_error
+            lda     #0
+            sec
+            jmp     return_a_or_xy
+
+_verify
+            sec
+            lda     #0
+            jmp     return_a
+
 open
 close
 chkin
