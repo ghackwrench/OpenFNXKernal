@@ -21,10 +21,12 @@ F256	= \
 	hardware/ps2_kbd2.asm \
 	hardware/ps2_f256.asm \
 	platforms/f256/hardware.asm \
+	platforms/f256/iec.asm \
 	
 
 CLI	= \
 	cli/cli.asm \
+	cli/cli_list.asm \
 	cli/vectors.asm \
 
 cli.bin:    Makefile $(CLI) 

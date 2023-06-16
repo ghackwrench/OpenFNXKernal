@@ -16,7 +16,7 @@ mmu         .fill       8       ; MMU LUT full-view.
 *           =   $200
             .dsection   data
 
-*           =   $300    ; Just after the data
+*           =   $8000   
 org         .word       shell.start + $c000 - org
             .dsection   strings
             .dsection   code
@@ -56,7 +56,7 @@ help        .null   "HELP"
 commands
             .word   str.cls,    cls
             .word   str.dir,    dir
-;            .word   str.list,   list
+            .word   str.list,   list
 ;            .word   str.load,   load
             .word   str.drive,  drive
 ;            .word   str.run,    platform.far_exec
@@ -158,6 +158,7 @@ _loop       inc     $c000+77
 shell
             jsr     SCINIT
             jsr     banner
+            jsr     list_init
 
             lda     #8
             sta     device
@@ -337,11 +338,6 @@ _out
             plx
             rts
 _fname      .text   "$"            
-
-list
-            sec
-            rts
-
 
             .send 
             .endn
