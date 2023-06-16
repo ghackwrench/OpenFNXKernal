@@ -8,6 +8,7 @@ KERNAL	= \
 	kernal/core.asm \
 	kernal/mem.asm \
 	kernal/rtc.asm \
+	kernal/err.asm \
 	kernal/io.asm \
 	kernal/vectors.asm \
 

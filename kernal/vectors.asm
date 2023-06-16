@@ -29,7 +29,7 @@ IOINIT      jmp     io.IOINIT
 RAMTAS      jmp     mem.RAMTAS
 RESTOR      jmp     io.RESTOR
 VECTOR      jmp     io.VECTOR
-SETMSG      jmp     setmsg
+SETMSG      jmp     err.SETMSG
 LSTNSA      jmp     iec.lstnsa
 TALKSA      jmp     iec.talksa
 MEMBOT      jmp     mem.MEMBOT
