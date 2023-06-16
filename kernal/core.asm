@@ -26,8 +26,6 @@ stop
             .endn
 
 ramtas
-restor
-vector
 setmsg
 scnkey
 settim
