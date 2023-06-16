@@ -50,7 +50,7 @@ load        .null   "LOAD"
 drive       .null   "DRIVE"
 run         .null   "RUN"
 sys         .null   "SYS"
-help        .null   "help"
+help        .null   "HELP"
             .endn
 
 commands

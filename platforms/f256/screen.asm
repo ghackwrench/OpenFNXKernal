@@ -11,9 +11,12 @@ screen      .namespace
 
             .section    dp
 line        .word       ?
+row         .byte       ?
 col         .byte       ?
 cursor      .byte       ?   ; $ff when the cursor is off.
 under       .byte       ?   ; Character under the curson when on.
+src         .word       ?
+dest        .word       ?
             .send            
 
             .section    hardware
@@ -31,6 +34,7 @@ init
         lda     #$ff
         sta     cursor
 
+        stz     row
         stz     col
         stz     line+0
         lda     #$c0
@@ -52,6 +56,8 @@ putch
             phy
             ldy     #2
             sty     io_ctrl
+            cmp     #12
+            beq     _cls
             cmp     #13
             beq     _cr
             ldy     col
@@ -60,18 +66,28 @@ putch
             cpy     #80
             bne     _done
 _lf         ldy     #0
+            lda     row
+            inc     a
+            cmp     #60
+            bcc     _adv
+            jsr     scroll
+            bra     _done
+_adv        sta     row
             lda     line+0
-            adc     #79
+            adc     #80
             sta     line+0
             bcc     _done
             inc     line+1
+            
 _done
             sty     col
             stz     io_ctrl
             ply
             pla
             rts            
-
+_cls
+            jsr     cls
+            bra     _done
 _cr
             lda     #32
             ldy     col
@@ -128,7 +144,7 @@ scroll_init
             ldx     #2
             stx     io_ctrl
             pha     
-            lda     #$32
+            lda     #32
             jsr     _fill
             pla
             stz     io_ctrl
@@ -148,6 +164,11 @@ cls
             sta     io_ctrl
             lda     #32
             jsr     fill
+            stz     row
+            stz     col
+            stz     line+0
+            lda     #$c0
+            sta     line+1
             rts
 
 fill
@@ -166,6 +187,7 @@ fill
 
 scroll
             phx
+            phy
             lda     #2
             sta     io_ctrl
             jsr     _scroll
@@ -173,20 +195,35 @@ scroll
             sta     io_ctrl
             jsr     _scroll
             stz     io_ctrl
+            ply
             plx
             rts
 _scroll
-            ldx     #0
-            ldy     #240
--           
-            .for    i := $c000, i < $d2c0, i += 240
-            lda     i+80,x
-            sta     i,x
-            .next
+            lda     #$c0
+            sta     src+1
+            sta     dest+1
+            lda     #80
+            sta     src+0
+            stz     dest+0
 
-            inx
-            dey
-            bne     -
+            ldx     #$12
+            ldy     #0
+_page       lda     (src),y
+            sta     (dest),y
+            iny
+            bne     _page
+            inc     src+1
+            inc     dest+1
+            dex
+            bne     _page
+
+            ldx     #$c0
+_byte       lda     (src),y
+            sta     (dest),y
+            iny
+            dex
+            bne     _byte
+            
             rts
 
 cursor_on

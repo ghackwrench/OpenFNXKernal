@@ -122,8 +122,20 @@ _getch      jsr     screen.cursor_on
 _report
             lda     line,y
             inc     reporting
-            cmp     #13
+     
+          ; BASIC expects all tokens in upper-case.
+          ; OpenKernal only upcases characters not
+          ; in quotes, but this code is mostly for
+          ; demonstration purposes. Make it your own.
+            cmp     #'a'
+            bcc     _ok
+            cmp     #'z'+1
+            bcs     _ok
+            eor     #32     ; Toggle lower to upper.
+
+_ok         cmp     #13
             bne     _done
+            stz     line_length
             stz     reporting
            
 _done       jmp     return_a            
