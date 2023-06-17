@@ -442,9 +442,8 @@ disp_nmi
 userland
             lda     #3
             sta     mmu_ctrl
-            lda     #4
-            sta     io_ctrl
-            jmp     ($c000)
+            stz     io_ctrl
+            jmp     ($a000)
              
 * = $ff5d
           ; Populate the "normal" vectors.

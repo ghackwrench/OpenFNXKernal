@@ -94,6 +94,8 @@ putch
             beq     _cls
             cmp     #13
             beq     _cr
+            cmp     #32
+            bcc     _out
             ldy     col
             sta     (line),y
             iny
@@ -116,7 +118,7 @@ _adv        sta     row
 _done
             sty     col
             stz     io_ctrl
-            ply
+_out        ply
             pla
             rts            
 _cls

@@ -16,8 +16,8 @@ mmu         .fill       8       ; MMU LUT full-view.
 *           =   $200
             .dsection   data
 
-*           =   $8000   
-org         .word       shell.start + $c000 - org
+*           =   $a000   
+org         .word       shell.shell
             .dsection   strings
             .dsection   code
 org_size    = * - org

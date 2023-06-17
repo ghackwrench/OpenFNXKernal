@@ -49,11 +49,13 @@ READST
 
 CHROUT      
             lda     user.reg_a
-            jmp     screen.putch
+            jsr     screen.putch
+            lda     #0
+            clc
+            jmp     return_a
 
 GETIN
-            jsr     kbd.get_key
-            jmp     return_a            
+            bra     CHRIN   ; Only for now, trying to get BASIC up.
             
 CHRIN
     ; CHRIN on stdin is modal ... it provides screen editing until
@@ -109,7 +111,8 @@ _ok         cmp     #13
             stz     line_length
             stz     reporting
            
-_done       jmp     return_a            
+_done       clc
+            jmp     return_a            
    
 
 SCINIT
@@ -131,8 +134,8 @@ IOINIT
             jsr     mem.set_top
 
           ; Set memory bottom.
-            ldx     #<$c000
-            ldy     #>$c000
+            ldx     #<$a000
+            ldy     #>$a000
             jsr     mem.set_bot
 
           ; Interrupt timer already initialized by platform code;
@@ -221,13 +224,14 @@ LOAD
             ldx     dest+0
             ldy     dest+1
             jsr     write_axy
+            bvs     _close
             inc     dest+0
             bne     +
             inc     dest+1
-+           bvc     -            
++           bra     -            
             
           ; Close.
-            jsr     platform.iec.UNTALK                        
+_close      jsr     platform.iec.UNTALK                        
             lda     device_id
             jsr     platform.iec.LISTEN
             lda     channel_id

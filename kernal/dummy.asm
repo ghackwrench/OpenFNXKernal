@@ -16,37 +16,15 @@ nmi
 
 irq         = hardware.irq.dispatch
 
-test
-.if true
-    .cpu "65816"
-    sec
-    xce
-    .cpu "65c02"    
-.endif
-            lda     #2
-            sta     io_ctrl
-            
-            jsr     $ffed
-            stx     $c000
-            sty     $c001
-            bra     _loop
-
-            ldx     #0
--           txa
-            sta     $c000+800,x
-            jsr     $ffd2
-            inx
-            bne     -
-_loop       inc     $c000+79
-            bra     _loop
-test_size   = * - test
-            
             
 start
-            jsr     hardware.irq.init
-            jsr     device.init
-            jsr     io.init
-            jsr     f256.init
+            jsr     hardware.irq.init   ; Init the IRQ dispatcher.
+            jsr     device.init         ; Init the kernel's device pool.
+            jsr     io.init             ; Init the kernel's i/o system.
+            jsr     f256.init           ; Init the platform devices.
+            jsr     IOINIT
+            jsr     SCINIT
+            jsr     RAMTAS
 
         ; Mount the CLI in the user's address space,
         ; and start it.
@@ -58,7 +36,39 @@ start
             
           ; CLI follows
             inx
+
+          ; Mount it at $a000
+            lda     #$b0        ; Edit #3 while running in #0.
+            sta     mmu_ctrl
+            stx     mmu+5
             
+          ; Back to the kernel map.
+            lda     #$80
+            sta     mmu_ctrl
+
+          ; Copy first five pages of the following block into
+          ; the user's $E000 block.
+            inx
+            stx     mmu+1
+            ldy     #0
+-           .for    i := 0, i < $500, i += $100
+            lda     $2000+i,y
+            sta     $4000+i,y       
+            .next
+            iny
+            bne     -
+            
+          ; Restore the shadow of the user's zp 
+            stz     mmu+1
+
+          ; Re-lock the MMU
+            stz     mmu_ctrl
+            
+          ; Run the block at $a000
+            jmp     userland
+
+
+.if false            
           ; Mount it under the I/O segment
             lda     #$b0        ; Edit #3 while running in #0.
             sta     mmu_ctrl
@@ -71,9 +81,9 @@ start
             lda     #4
             sta     io_ctrl
             
-          ; Run the block at $c000
+          ; Run the block at $a000
             jmp     userland
-            
+.endif            
             .send
             .endn
             

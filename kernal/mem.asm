@@ -44,7 +44,8 @@ RAMTAS
 
             
 MEMBOT
-            bcc     set_bot
+            lda     user.carry
+            beq     set_bot
 
 _load       ldx     mem_end+0
             ldy     mem_end+1
@@ -55,7 +56,8 @@ set_bot     stx     mem_end+0
             rts
 
 MEMTOP
-            bcc     set_top
+            lda     user.carry
+            beq     set_top
 
 _load       ldx     mem_start+0
             ldy     mem_start+1
