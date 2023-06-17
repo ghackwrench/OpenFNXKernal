@@ -420,9 +420,11 @@ gate
             txs
 
           ; Restore the registers.
-            lda     args.reg_a
+          ; We do A last to set the zero flag.
+          ; This is needed for the STOP call...
             ldx     args.reg_x
             ldy     args.reg_y
+            lda     args.reg_a
             
           ; Return to caller
             rts            

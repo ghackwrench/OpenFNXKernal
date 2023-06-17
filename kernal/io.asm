@@ -49,13 +49,12 @@ READST
 
 CHROUT      
             lda     user.reg_a
-            jsr     screen.putch
-            lda     #0
-            clc
-            jmp     return_a
+            jmp     screen.putch
 
 GETIN
-            bra     CHRIN   ; Only for now, trying to get BASIC up.
+            jsr     kbd.get_key
+            clc
+            jmp     return_a
             
 CHRIN
     ; CHRIN on stdin is modal ... it provides screen editing until

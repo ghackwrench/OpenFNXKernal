@@ -23,9 +23,11 @@ kbd_queue   .fill       QUEUE_LEN   ; Simple keyboard buffer.
 
 init
             stz     stop
-reset
+            php
+            sei
             stz     kbd_head
             stz     kbd_tail
+            plp
             rts            
 
 key_pressed
@@ -94,14 +96,19 @@ UDTIM
             rts
 
 STOP
-            clc
             lda     stop
-            beq     _done
+            bne     _stop
+            
+            lda     #$ff
+            clc
+            jmp     return_a
+            
+_stop
             jsr     io.clrchn
-            jsr     reset
-            lda     #1
+            jsr     init
+            lda     #0
             sec
-_done       rts            
+            jmp     return_a
 
             .send
             .endn

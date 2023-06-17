@@ -120,6 +120,7 @@ _done
             stz     io_ctrl
 _out        ply
             pla
+            clc
             rts            
 _cls
             jsr     cls
