@@ -18,7 +18,6 @@ untalk
 unlstn
 listen
 talk
-readst
     .endn     
 
 

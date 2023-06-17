@@ -41,6 +41,11 @@ init
             stz     reporting
             rts
             
+READST
+          ; TODO: implement.
+
+            lda     #0
+            jmp     return_a
 
 CHROUT      
             lda     user.reg_a

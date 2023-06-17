@@ -4,13 +4,13 @@ COPT = -C -Wall -Werror -Wno-shadow --verbose-list
 
 KERNAL	= \
 	kernal/dummy.asm \
-	kernal/core.asm \
 	kernal/err.asm \
+	kernal/iec.asm \
+	kernal/io.asm \
 	kernal/kbd.asm \
 	kernal/keys.asm \
 	kernal/mem.asm \
 	kernal/rtc.asm \
-	kernal/io.asm \
 	kernal/vectors.asm \
 
 
