@@ -35,7 +35,7 @@ SLOT        =   5       ; The MicroKernel will map us here.
             .word       start       ; Start here
             .word       0           ; version
             .word       0           ; kernel
-            .null       "pwn"       ; Slot 8
+            .null       "cbm"       ; Slot 8
 
 start       = boot & $1fff | ($2000 * SLOT)
 

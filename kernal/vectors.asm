@@ -53,7 +53,7 @@ CLRCHN      jmp     io.clrchn
 CHRIN       jmp     io.CHRIN
 CHROUT      jmp     io.CHROUT
 LOAD        jmp     io.LOAD
-SAVE        jmp     io.save
+SAVE        jmp     io.SAVE
 SETTIM      jmp     rtc.SETTIM
 RDTIM       jmp     rtc.RDTIM
 STOP        jmp     kbd.STOP

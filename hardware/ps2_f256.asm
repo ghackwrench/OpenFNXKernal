@@ -75,11 +75,6 @@ dev_irq
             bit     #1<<\PORT
             bne     _done
 
-    lda     #2
-    sta     io_ctrl
-    inc     $c000+78
-    stz     io_ctrl
-
             phx
             lda     decoder,x
             tax

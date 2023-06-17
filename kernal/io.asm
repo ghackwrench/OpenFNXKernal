@@ -172,7 +172,10 @@ SETNAM
 -           jsr     read_axy
             sta     (dest)
             inc     dest+0
-            dec     tmp
+            inx
+            bne     +
+            iny
++           dec     tmp
             bne     -
 
             rts
@@ -218,6 +221,10 @@ LOAD
             jsr     platform.iec.DEV_SEND
             bcs     _error
             
+          ; Drop the address
+            jsr     platform.iec.IECIN
+            jsr     platform.iec.IECIN
+            
 -           jsr     platform.iec.IECIN
             bcs     _error  ; TODO: not-found if first read.
             ldx     dest+0
@@ -254,13 +261,108 @@ _verify
             lda     #0
             jmp     return_a
 
+
+SAVE
+            ldx     user.reg_a
+            lda     $2000,x
+            sta     src+0
+            lda     $2001,x
+            sta     src+1
+
+            ldx     user.reg_x
+            stx     dest+0
+            ldy     user.reg_y
+            sty     dest+1
+
+          ; Open the file by name.
+
+            lda     device_id
+            jsr     platform.iec.LISTEN
+            bcs     _error
+            
+            lda     #1; channel_id
+            jsr     platform.iec.OPEN
+            bcs     _error
+            
+            ldx     #0
+-           lda     fname,x
+            jsr     platform.iec.IECOUT
+            bcs     _error
+            inx
+            cpx     fname_len
+            bne     -
+            
+            jsr     platform.iec.UNLISTEN
+            bcs     _error
+                        
+            
+          ; Write the data.
+          
+            lda     device_id
+            jsr     platform.iec.LISTEN
+            bcs     _error
+            
+            lda     #1  ; Override channel ID.
+            jsr     platform.iec.DEV_RECV
+            bcs     _error
+            
+            lda     src+0
+            jsr     platform.iec.IECOUT
+            bcs     _error
+            lda     src+1
+            jsr     platform.iec.IECOUT
+            bcs     _error
+
+_loop
+            ldx     src+0
+            ldy     src+1
+            jsr     read_axy
+            jsr     platform.iec.IECOUT
+            bcs     _error
+            ldx     src+0
+            inx
+            bne     +
+            inc     y
+            sty     src+1
++           stx     src+0            
+
+            cpy     dest+1
+            bne     _loop
+            cpx     dest+0
+            bne     _loop
+
+          ; Close.
+_close      jsr     platform.iec.UNLISTEN                        
+            lda     device_id
+            jsr     platform.iec.LISTEN
+            lda     #1; channel_id
+            jsr     platform.iec.CLOSE
+            jsr     platform.iec.UNLISTEN
+            
+
+          ; Return end of data.
+            lda     #0
+            clc
+            jmp     return_a
+            
+_error
+            lda     #0
+            sec
+            jmp     return_a
+
+_verify
+            sec
+            lda     #0
+            jmp     return_a
+
+
+
 open
 close
 chkin
 chkout
 clrchn
 clall
-save
             rts
 
 RESTOR
@@ -300,7 +402,7 @@ _iovec
             .word   io.clall
             .word   _user
             .word   io.LOAD
-            .word   io.save
+            .word   io.SAVE
 
 
 VECTOR
