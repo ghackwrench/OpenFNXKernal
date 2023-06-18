@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 # f256.bin is the kernel bundled with a simple shell.
-# v2basiic.bin is the kernel bundled with a C64 BASIC ROM.
+# v2basic.bin is the kernel bundled with a C64 BASIC ROM.
 # YOU MUST SUPPLY THE ROM YOURSELF.
 
 always: f256.bin v2basic.bin
