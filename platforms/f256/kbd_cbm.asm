@@ -11,13 +11,6 @@ c64kbd      .namespace
 
 driver      .macro  IRQ=hardware.irq.frame
 
-self        .namespace
-            .virtual    kernel.DevState
-this        .byte   ?   ; Copy of the device address
-tick        .byte   ?
-            .endv
-            .endn
-            
 vectors     .kernel.device.mkdev    dev
 
 init
@@ -32,8 +25,6 @@ init
       ; Allocate the device table entry.
         jsr     kernel.device.alloc
         bcs     _out
-        txa
-        sta     self.this,x
         
       ; Install our vectors.
         lda     #<vectors
@@ -74,7 +65,11 @@ DDRA =  $dc03  ; CIA#1 (Data Direction Register A)
 PRB  =  $dc00  ; CIA#1 (Port Register B)
 DDRB =  $dc02  ; CIA#1 (Data Direction Register B)
 
-        .section    kmem
+        ; The below could all be moved to device-local memory now,
+        ; but there's little point as there will never be more than
+        ; one instance.
+
+        .section    dp
 mask    .byte       ?   ; Copy of PRA output
 hold    .byte       ?   ; Copy of PRB during processing
 bitno   .byte       ?   ; # of the col bit being processed
