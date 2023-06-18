@@ -274,6 +274,8 @@ _alt
         ora     #$80
         
 _queue
+        phy
+
       ; 'A' contains the ASCII (if valid).
 
       ; Set carry on non-ascii.
@@ -284,7 +286,10 @@ _queue
         ldy     event
         
       ; Queue.
-        jmp     kernel.kbd.key_pressed
+        jsr     kernel.kbd.key_pressed
+        
+        ply
+        rts
 
 .if false
         phy
