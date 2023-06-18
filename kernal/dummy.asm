@@ -21,7 +21,7 @@ start
             jsr     hardware.irq.init   ; Init the IRQ dispatcher.
             jsr     device.init         ; Init the kernel's device pool.
             jsr     io.init             ; Init the kernel's i/o system.
-            jsr     f256.init           ; Init the platform devices.
+            jsr     platform.init       ; Init the platform devices.
             jsr     IOINIT
             jsr     SCINIT
             jsr     RAMTAS

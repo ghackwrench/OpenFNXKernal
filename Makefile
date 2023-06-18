@@ -27,6 +27,9 @@ F256	= \
 	platforms/f256/interrupt_def.asm \
 	platforms/f256/irq.asm \
 	platforms/f256/screen.asm \
+	platforms/f256/dips.asm \
+	platforms/f256/kbd_cbm.asm \
+	platforms/f256/keyboard.asm \
 	hardware/hardware.asm \
 	hardware/device.asm \
 	hardware/ps2_kbd2.asm \
