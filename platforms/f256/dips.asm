@@ -1,3 +1,7 @@
+; Modified code from the 65c02 TinyCore MicroKernel.
+; Copyright 2022 Jessie Oberreuter <Gadget@HackwrenchLabs.com>.
+# SPDX-License-Identifier: GPL-3.0-only
+
             .cpu        "65c02"
 
             .namespace  platform

@@ -1,6 +1,6 @@
-; OpenKERNAL - a clean-room implementation of the C64's KERNAL ABI.
+; Modified code from the 65c02 TinyCore MicroKernel.
 ; Copyright 2022 Jessie Oberreuter <Gadget@HackwrenchLabs.com>.
-; SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-only
 
 ; Driver for a VIC20/C264 keyboard connected to the 6522 port.
 

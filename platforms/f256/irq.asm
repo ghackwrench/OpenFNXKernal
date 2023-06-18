@@ -1,6 +1,5 @@
-; FoenixKERNAL - a clean-room implementation of the C64's KERNAL ABI.
+; Modified code from the 65c02 TinyCore MicroKernel
 ; Copyright 2023 Jessie Oberreuter <Gadget@HackwrenchLabs.com>.
-; SPDX-License-Identifier: GPL-3.0-only
 
             .cpu    "w65c02"
 
