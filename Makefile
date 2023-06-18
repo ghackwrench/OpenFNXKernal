@@ -29,6 +29,7 @@ F256	= \
 	platforms/f256/screen.asm \
 	platforms/f256/dips.asm \
 	platforms/f256/kbd_cbm.asm \
+	platforms/f256/kbd_f256k.asm \
 	platforms/f256/keyboard.asm \
 	hardware/hardware.asm \
 	hardware/device.asm \
