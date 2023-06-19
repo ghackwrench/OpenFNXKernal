@@ -29,10 +29,12 @@ src         .word       ?
 dest        .word       ?
 printing    .word       ?
 device      .byte       ?
+fat_ctx     .byte       ?
             .send            
 
             .section    data
-cmd         .fill   80
+cmd         .fill       80
+dirent      .dstruct    dirent_t
             .send
 
             .section    strings
@@ -41,6 +43,7 @@ strings:
 str         .namespace
 unknown     .text   "?", 13, 0
 prompt      .text   13,"READY DEVICE",0
+ls          .null   "LS"
 dir         .null   "DIR"
 stat        .null   "STAT"
 rds         .null   "RDS"
@@ -55,6 +58,7 @@ help        .null   "HELP"
 
 commands
             .word   str.cls,    cls
+            .word   str.ls,     sd_dir
             .word   str.dir,    dir
             .word   str.list,   list
 ;            .word   str.load,   load
@@ -142,7 +146,8 @@ _text
             .text   13,"Supported commands:",13
             .text   "   cls         Clears the screen.",13
             .text   "   drive #     Changes the drive to #.",13
-            .text   "   dir         Displays the directory.",13
+            .text   "   dir         Displays the IEC directory.",13
+            .text   "   ls          Displays the SD card's directory.",13
             .text   "   load",$22,"fname",$22," Loads the given file ',1'.", 13
             .text   "   list        LISTs directories and simple programs.",13
             .text   "   run         Runs loaded programs.",13
@@ -338,6 +343,68 @@ _out
             plx
             rts
 _fname      .text   "$"            
+
+sd_dir
+            phx
+            phy
+
+          ; Init the SDC
+            ldx     #FAT_INIT
+            jsr     SDCARD
+            bcc     _out
+
+          ; Allocate a context.
+            lda     #0  ; Partition 0.
+            ldx     #FAT_CTX_NEW
+            jsr     SDCARD
+            bcc     _out
+            sta     fat_ctx
+   
+          ; Open the root directory
+            lda     #0      ; no path implies current
+            jsr     SETNAM
+            ldx     #FAT_DOPEN
+            jsr     SDCARD
+            bcc     _out
+            
+_loop
+          ; Read a directory entry
+            ldx     #FAT_DREAD
+            ldy     #>dirent
+            lda     #<dirent
+            jsr     SDCARD
+            bcc     _close
+            
+          ; Print the entry
+            ldx     #0
+-           lda     dirent.fname,x
+            beq     +
+            jsr     CHROUT
+            inx
+            bra     -
++           lda     #13
+            jsr     CHROUT
+            
+            bra     _loop            
+            
+          ; Close the dir.
+_close      ldx     #FAT_DCLOSE
+            jsr     SDCARD
+            
+_free
+            lda     fat_ctx
+            ldx     #FAT_CTX_FREE
+            jsr     SDCARD
+
+_out
+          ; We use carry set for error.
+            rol     a
+            eor     #1
+            lsr     a
+
+            ply
+            plx
+            rts
 
             .send 
             .endn

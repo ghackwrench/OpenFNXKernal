@@ -22,7 +22,7 @@ vectors     .struct                 ; $ffd5
             jmp     dummy           ; Available
             jmp     dummy           ; Available
             jmp     dummy           ; Available
-            jmp     dummy           ; Available
+            jmp     platform.sdcard.SDCARD
 
 SCINIT      jmp     io.SCINIT       ; $ff81
 IOINIT      jmp     io.IOINIT

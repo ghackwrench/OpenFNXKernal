@@ -31,6 +31,7 @@ F256	= \
 	platforms/f256/kbd_cbm.asm \
 	platforms/f256/kbd_f256k.asm \
 	platforms/f256/keyboard.asm \
+	platforms/f256/fat32.asm \
 	hardware/hardware.asm \
 	hardware/device.asm \
 	hardware/ps2_kbd2.asm \

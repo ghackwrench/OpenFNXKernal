@@ -165,8 +165,9 @@ SETNAM
             
             lda     user.reg_a
             sta     fname_len
-            sta     tmp
+            beq     _done
 
+            sta     tmp
             ldx     user.reg_x
             ldy     user.reg_y
 -           jsr     read_axy
@@ -178,7 +179,7 @@ SETNAM
 +           dec     tmp
             bne     -
 
-            rts
+_done       rts
 
 LOAD
             lda     user.reg_a

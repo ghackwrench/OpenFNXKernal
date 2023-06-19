@@ -18,6 +18,7 @@ mmu_ctrl    .byte       ?
 io_ctrl     .byte       ?
 reserved    .fill       6
 mmu         .fill       8     ; MMU LUT full-view.
+            .fill       16    ; Reserved for fat32.
             .dsection   dp
 
             .virtual    $0200
@@ -101,11 +102,15 @@ reset
             lda     #7
             sta     mmu+2
             
-          ; 3&4 will be fatfs
-          
-          ; 5: generic kernel code
+          ; 3: generic kernel code
             lda     mmu+7
             inc     a
+            sta     mmu+3
+          
+          ; 4&5 will be fatfs
+            lda     #$7d
+            sta     mmu+4
+            lda     #$7e
             sta     mmu+5
             
           ; 6: I/O
