@@ -359,6 +359,11 @@ sd_dir
             jsr     SDCARD
             bcc     _out
             sta     fat_ctx
+
+          ; Set the context.
+            ldx     #FAT_CTX_SET
+            jsr     SDCARD
+            bcc     _out
    
           ; Open the root directory
             lda     #0      ; no path implies current

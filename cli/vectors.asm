@@ -64,7 +64,7 @@ FAT_CTX_FREE    .byte       ?
 FAT_CTX_SET     .byte       ?
                 .byte       ?
 FAT_FOPEN       .byte       ?
-FAT_FCREATE     .byte       ?
+FAT_FCREATE     .byte       ?   ; Set carry to overwrite.
 FAT_FCLOSE      .byte       ?
                 .byte       ?
                 .byte       ?
@@ -73,17 +73,17 @@ FAT_WRITE       .byte       ?
                 .byte       ?
                 .byte       ?
 FAT_DOPEN       .byte       ?
-FAT_DREAD       .byte       ?
+FAT_DREAD       .byte       ?   ; A/Y = address of dirent struct.
 FAT_DCLOSE      = FAT_FCLOSE
                 .byte       ?
                 .byte       ?
 FAT_DELETE      .byte       ?
-                .byte       ?
+FAT_RENAME      .byte       ?   ; Y=page w/ new name, A=length of new name.
                 .byte       ?
                 .byte       ?
 FAT_MKDIR       .byte       ?
 FAT_RMDIR       .byte       ?
-                .byte       ?
+FAT_VREAD       .byte       ?   ; A/Y = address of dirent struct.
                 .byte       ?
                 .byte       ?
 FAT_MKFS        .byte       ?

@@ -56,6 +56,10 @@ fat32_rmdir             .fill   3
 
                         .endv
 
+            .section    pages
+new_name    .fill       256
+            .send            
+
             .section    hardware
 
 SDCARD
@@ -121,12 +125,12 @@ _table
             .word   _error              ; read_dirent_filtered
             .word   _error              ; find_dirent
             .word   delete
-            .word   _error              ; rename
+            .word   rename
             .word   _error              ; set_attribute
             .word   _error              ; chdir
             .word   mkdir
             .word   rmdir
-            .word   _error              ; get_vollable
+            .word   read_volume
             .word   _error              ; set_vollable
             .word   _error              ; get_free_space
             .word   fat32_mkfs
@@ -231,7 +235,18 @@ read_dirent
         ; Load the next entry into dirent.
             jsr     fat32_read_dirent
             bcc     _out
+            bra     copy_dirent
+_out        rts                       
 
+read_volume
+        ; Load the next entry into dirent.
+            jsr     fat32_get_vollable
+            bcc     _out
+            bra     copy_dirent
+_out        rts                       
+
+
+copy_dirent
         ; Copy dirent to userland.
           
           ; 'src' is the address of fat32's dirent struct.
@@ -262,8 +277,41 @@ _copy
             bne     - 
 
             sec
-_out        rts                       
+            rts                       
+
+rename
+    ; A = new name length
+    ; Y = user page containing the new name.
+    
+          ; Make sure we have a new name.
+            clc
+            lda     user.reg_a
+            beq     _err
+
+          ; Copy the new name into our buffer and terminate.
+            ldx     #0
+            ldy     user.reg_y
+-           jsr     read_axy
+            sta     new_name,x
+            inx
+            cpx     user.reg_a
+            bne     -
+            stz     new_name,x
+
+          ; Set the original name.
+            jsr     set_name
             
+          ; Set the new name.
+            lda     #>new_name
+            jsr     set_ptr2
+
+          ; Chain to the fat32 rename function.
+            jmp     fat32_rename
+            
+_err
+            lda     #8  ; Missing file name.
+            rts
+       
 delete
 
           ; Set the file name.
